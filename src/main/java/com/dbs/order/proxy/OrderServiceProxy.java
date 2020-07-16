@@ -1,4 +1,4 @@
-package com.dbs.order.controller;
+package com.dbs.order.proxy;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
