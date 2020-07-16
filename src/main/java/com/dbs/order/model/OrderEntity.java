@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "TBL_ORDER")
@@ -13,18 +15,22 @@ public class OrderEntity {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@NotNull
     private Long id;
 	
 	@Column(name="CUSTOMER_NAME")
+	@NotEmpty(message = "Customer name can't be empty")
 	private String customer_name;
 	
 	@Column(name="ORDER_DATE")
 	private String order_date;
 	
 	@Column(name="SHIPPING_ADDRESS")
+	@NotEmpty(message = "Shipping address can't be empty")
 	private String shipping_address;
 	
 	@Column(name="ORDER_ITEM")
+	@NotEmpty(message = "Order Item can't be empty")
 	private String order_item;
 	
 	@Column(name="TOTAL")

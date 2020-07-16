@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.dbs.order.exception.OrderItemNotFoundException;
 import com.dbs.order.exception.OrderNotFoundException;
 import com.dbs.order.model.OrderEntity;
+import com.dbs.order.model.OrderItem;
+import com.dbs.order.proxy.OrderServiceProxy;
 import com.dbs.order.repository.OrderRepository;
 
 @Service
@@ -16,6 +20,12 @@ public class OrderService {
 
 	@Autowired
 	OrderRepository orderRepository;
+	
+	@Autowired
+	OrderServiceProxy orderServiceProxy;
+	
+	@Value("${orderitem.decrement.count}")
+	private int decrementCount;
 	
 	public List<OrderEntity> getAllOrder(){
 		List<OrderEntity> orderList = orderRepository.findAll();
@@ -37,7 +47,20 @@ public class OrderService {
 		}
 	}
 	
-	public OrderEntity createOrUpdateOrder(OrderEntity orderEntity) {
+	public OrderEntity createOrUpdateOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
+		
+		String productName = orderEntity.getOrder_item();
+		OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);
+		
+		Optional<OrderItem> orderItemObj = Optional.of(orderItem);
+		if(orderItemObj.isPresent()) {
+			int productCount = orderItem.getQuantity();
+			orderItem.setQuantity(productCount - decrementCount);
+			orderServiceProxy.createOrUpdateOrder(orderItem);
+		}else {
+			throw new OrderItemNotFoundException("Product Not available");
+		}
+		
 		
 		Optional<OrderEntity> order = orderRepository.findById(orderEntity.getId());
 		if(order.isPresent()) {
