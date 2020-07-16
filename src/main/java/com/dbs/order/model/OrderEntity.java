@@ -34,7 +34,7 @@ public class OrderEntity {
 	private String order_item;
 	
 	@Column(name="TOTAL")
-	private String total;
+	private float total;
 
 	public Long getId() {
 		return id;
@@ -76,11 +76,11 @@ public class OrderEntity {
 		this.order_item = order_item;
 	}
 
-	public String getTotal() {
+	public float getTotal() {
 		return total;
 	}
 
-	public void setTotal(String total) {
+	public void setTotal(float total) {
 		this.total = total;
 	}
 
