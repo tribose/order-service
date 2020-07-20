@@ -68,7 +68,7 @@ public class OrderService {
 	
 	public OrderEntity createOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
 			
-		for(Product product : orderEntity.getOrder_item()) {
+		for(Product product : orderEntity.getOrderItems()) {
 			String productName = product.getProductName();
 			try {
 				OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);
@@ -85,12 +85,12 @@ public class OrderService {
 			
 		}
 		orderEntity.setOrderNumber(ThreadLocalRandom.current().nextLong(5000000, 5050000));
-		for(Product product : orderEntity.getOrder_item()) {
+		for(Product product : orderEntity.getOrderItems()) {
 			product.setOrderElement(orderEntity);
 		}
 		
 		orderEntity = orderRepository.save(orderEntity);
-		for(Product product : orderEntity.getOrder_item()) {
+		for(Product product : orderEntity.getOrderItems()) {
 			String productName = product.getProductName();
 			try {
 				OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);

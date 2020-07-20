@@ -7,10 +7,10 @@ A > Exposed REST URI:
 	Sample Request Body: 
 	
 	{
-		"customer_name": "Alice",
-		"order_date": "02/03/2019",
-		"shipping_address": "Bangalore",
-		"order_item": [
+		"customerName": "Alice",
+		"orderDate": "02/03/2019",
+		"shippingAddress": "Bangalore",
+		"orderItems": [
 			{
 				"productName": "Jacket",
 				"count": 2

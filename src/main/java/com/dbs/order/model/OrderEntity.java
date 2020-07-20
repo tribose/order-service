@@ -28,17 +28,17 @@ public class OrderEntity {
 	
 	@Column(name="CUSTOMER_NAME")
 	@NotEmpty(message = "Customer name can't be empty")
-	private String customer_name;
+	private String customerName;
 	
 	@Column(name="ORDER_DATE")
-	private String order_date;
+	private String orderDate;
 	
 	@Column(name="SHIPPING_ADDRESS")
 	@NotEmpty(message = "Shipping Address can't be empty")
-	private String shipping_address;
+	private String shippingAddress;
 
 	@OneToMany(mappedBy="orderElement", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	private List<Product> order_item = new ArrayList<>();
+	private List<Product> orderItems = new ArrayList<>();
 	
 	@Column (name="TOTAL")
 	@NotNull(message = "Total amount can't be empty")
@@ -60,36 +60,40 @@ public class OrderEntity {
 		this.orderNumber = orderNumber;
 	}
 
-	public String getCustomer_name() {
-		return customer_name;
+	public String getCustomerName() {
+		return customerName;
 	}
 
-	public void setCustomer_name(String customer_name) {
-		this.customer_name = customer_name;
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
-	public String getOrder_date() {
-		return order_date;
+	public String getOrderDate() {
+		return orderDate;
 	}
 
-	public void setOrder_date(String order_date) {
-		this.order_date = order_date;
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
 	}
 
-	public String getShipping_address() {
-		return shipping_address;
+	public String getShippingAddress() {
+		return shippingAddress;
 	}
 
-	public void setShipping_address(String shipping_address) {
-		this.shipping_address = shipping_address;
+	public void setShippingAddress(String shippingAddress) {
+		this.shippingAddress = shippingAddress;
 	}
 
-	public List<Product> getOrder_item() {
-		return order_item;
+	public List<Product> getOrderItems() {
+		return orderItems;
 	}
 
-	public void setOrder_item(List<Product> order_item) {
-		this.order_item = order_item;
+	public void setOrderItems(List<Product> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public float getTotal() {
@@ -102,8 +106,8 @@ public class OrderEntity {
 
 	@Override
 	public String toString() {
-		return "OrderEntity [id=" + id + ", orderNumber=" + orderNumber + ", customer_name=" + customer_name
-				+ ", order_date=" + order_date + ", shipping_address=" + shipping_address + ", order_item=" + order_item
+		return "OrderEntity [id=" + id + ", orderNumber=" + orderNumber + ", customerName=" + customerName
+				+ ", orderDate=" + orderDate + ", shippingAddress=" + shippingAddress + ", orderItems=" + orderItems
 				+ ", total=" + total + "]";
 	}
 }
