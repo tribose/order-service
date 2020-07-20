@@ -1,8 +1,8 @@
 package com.dbs.order.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,69 +12,79 @@ import com.dbs.order.exception.OrderItemNotFoundException;
 import com.dbs.order.exception.OrderNotFoundException;
 import com.dbs.order.model.OrderEntity;
 import com.dbs.order.model.OrderItem;
+import com.dbs.order.model.Product;
 import com.dbs.order.proxy.OrderServiceProxy;
 import com.dbs.order.repository.OrderRepository;
+
+import feign.FeignException;
 
 @Service
 public class OrderService {
 
-	@Autowired
-	OrderRepository orderRepository;
 	
-	@Autowired
-	OrderServiceProxy orderServiceProxy;
+	  @Autowired 
+	  OrderRepository orderRepository;
+	  
+	  @Autowired 
+	  OrderServiceProxy orderServiceProxy;
+	  
+	  @Value("${orderitem.decrement.count}") 
+	  private int decrementCount;
+	  
+	  public List<OrderEntity> getAllOrder() throws OrderNotFoundException{ 
+		  List<OrderEntity> orderList = orderRepository.findAll();
+		  System.out.println("getAllOrder : "+orderList);
+		  if(orderList.size() > 0) {
+			  return orderList; 
+		  }
+		  else { 
+			  throw new OrderNotFoundException("Order Not Found. Please create an order or try something else");
+		  } 
+	  }
+	  
+	  public OrderEntity getOrderByOrderNumber(long orderNumber) throws OrderNotFoundException {
+	  
+		  Optional<OrderEntity> order = orderRepository.findByOrderNumber(orderNumber);
+		  if(order.isPresent()) { 
+			  return order.get(); 
+		  }else { 
+			  throw new OrderNotFoundException("Order Not Found. Please try something else"); 
+		  } 
+	  }
+	 
 	
-	@Value("${orderitem.decrement.count}")
-	private int decrementCount;
-	
-	public List<OrderEntity> getAllOrder(){
-		List<OrderEntity> orderList = orderRepository.findAll();
-		
-		if(orderList.size() > 0) {
-			return orderList;
-		}else {
-			return new ArrayList<OrderEntity>();
-		}	
-	}
-	
-	public OrderEntity getOrderById(Long id) throws OrderNotFoundException {
-		
-		Optional<OrderEntity> order = orderRepository.findById(id);
-		if(order.isPresent()) {
-			return order.get();
-		}else {
-			throw new OrderNotFoundException("Order Not Found. Please try something else");
-		}
-	}
-	
-	public OrderEntity createOrUpdateOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
-		
-		String productName = orderEntity.getOrder_item();
-		OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);
-		
-		Optional<OrderItem> orderItemObj = Optional.of(orderItem);
-		if(orderItemObj.isPresent()) {
-			int productCount = orderItem.getQuantity();
-			orderItem.setQuantity(productCount - decrementCount);
-			orderServiceProxy.createOrUpdateOrder(orderItem);
-		}else {
-			throw new OrderItemNotFoundException("Product Not available");
-		}
-		
-		
-		Optional<OrderEntity> order = orderRepository.findById(orderEntity.getId());
-		if(order.isPresent()) {
-			OrderEntity newOrder = order.get();
-			newOrder.setCustomer_name(orderEntity.getCustomer_name());
-			newOrder.setOrder_date(orderEntity.getOrder_date());
-			newOrder.setShipping_address(orderEntity.getShipping_address());
-			newOrder.setTotal(orderEntity.getTotal());
+	public OrderEntity createOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
 			
-			newOrder = orderRepository.save(newOrder);
-			return newOrder;
-		}else {
-			orderEntity = orderRepository.save(orderEntity);
-			return orderEntity;
+		for(Product product : orderEntity.getOrder_item()) {
+			String productName = product.getProductName();
+			try {
+				OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);
+				System.out.println("Order Items "+ orderItem);
+				if(orderItem.getQuantity() < product.getCount()) {
+					throw new OrderItemNotFoundException("Requested order quantity for "+product.getProductName() +" is more than available quantity of "+orderItem.getQuantity());
+				}
+			}catch(FeignException ex) {
+				throw new OrderItemNotFoundException(ex.getMessage());
+			}
+			
 		}
+		orderEntity.setOrderNumber(ThreadLocalRandom.current().nextLong(5000000, 5050000));
+		for(Product product : orderEntity.getOrder_item()) {
+			product.setOrderElement(orderEntity);
+		}
+		
+		orderEntity = orderRepository.save(orderEntity);
+		for(Product product : orderEntity.getOrder_item()) {
+			String productName = product.getProductName();
+			try {
+				OrderItem orderItem = orderServiceProxy.getOrderItemByProductName(productName);
+				int orderItemQuantity = orderItem.getQuantity() - product.getCount();
+				orderItem.setQuantity(orderItemQuantity);
+				orderServiceProxy.updateOrderItem(orderItem);
+			}catch(FeignException ex) {
+				throw new OrderItemNotFoundException(ex.getMessage());
+			}
+		}
+		return orderEntity;
 	}
 }

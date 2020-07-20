@@ -3,7 +3,7 @@ package com.dbs.order.web;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +28,24 @@ public class OrderServiceController {
 	@Autowired
 	OrderService orderService;
 	
-	@GetMapping(produces = MediaType.APPLICATION_JSON)
-	public List<OrderEntity> getAllOrder(){
-		
-		return orderService.getAllOrder();
+	@GetMapping(produces = MediaType.APPLICATION_JSON) 
+	public List<OrderEntity> getAllOrder() throws OrderNotFoundException{
+  
+		return orderService.getAllOrder(); 
 	}
-	
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-	public OrderEntity getOrderbyId(@PathVariable @Min(value = 1, message = "id must be greater than or equal to 1") Long id) throws OrderNotFoundException {
-		
-		return orderService.getOrderById(id);
+  
+	@GetMapping(value = "/{orderNumber}", produces = MediaType.APPLICATION_JSON)
+	public OrderEntity  getOrderbyOrderNumber(@NotNull @PathVariable("orderNumber") long orderNumber) throws OrderNotFoundException {
+  
+		return orderService.getOrderByOrderNumber(orderNumber); 
 	}
+	 
 	
-	@PostMapping
-	public OrderEntity createOrUpdateOrder(@Valid @RequestBody OrderEntity order) throws OrderItemNotFoundException{
+	@PostMapping(produces = MediaType.APPLICATION_JSON)
+	public OrderEntity createOrder(@Valid @RequestBody OrderEntity order) throws OrderItemNotFoundException{
 		
-		System.out.println("orderEntity.toString() :"+order.toString());
-		OrderEntity orderResponse = orderService.createOrUpdateOrder(order);
+		OrderEntity orderResponse = orderService.createOrder(order);
+		System.out.println("orderResponse :"+orderResponse);
 		return orderResponse;
 	}
 }
