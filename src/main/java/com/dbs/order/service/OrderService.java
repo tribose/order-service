@@ -77,7 +77,10 @@ public class OrderService {
 					throw new OrderItemNotFoundException("Requested order quantity for "+product.getProductName() +" is more than available quantity of "+orderItem.getQuantity());
 				}
 			}catch(FeignException ex) {
-				throw new OrderItemNotFoundException(ex.getMessage());
+				String errorMsg = ex.getMessage();
+				errorMsg = errorMsg.substring(errorMsg.indexOf("message"), errorMsg.indexOf("details"))
+									.replace("message", "").replace(":", "");
+				throw new OrderItemNotFoundException(errorMsg);
 			}
 			
 		}
