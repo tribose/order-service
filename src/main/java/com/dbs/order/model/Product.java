@@ -1,6 +1,5 @@
 package com.dbs.order.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,8 +11,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name="TBL_PRODUCT")
+@Getter
+@Setter
 public class Product {
 
 	@Id
@@ -30,33 +35,8 @@ public class Product {
 	
 	@ManyToOne
 	@JoinColumn(name="ORDER_ID", nullable=false)
+	@Getter(value = AccessLevel.NONE)
 	private OrderEntity orderElement;
-
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-	public int getCount() {
-		return count;
-	}
-	public void setCount(int count) {
-		this.count = count;
-	}
-	
-	public void setOrderElement(OrderEntity orderElement) {
-		this.orderElement = orderElement;
-	}
 
 	@Override
 	public String toString() {

@@ -15,8 +15,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name="TBL_ORDER")
+@Getter
+@Setter
 public class OrderEntity {
 
 	@Id
@@ -44,65 +49,7 @@ public class OrderEntity {
 	@NotNull(message = "Total amount can't be empty")
 	private float total;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public long getOrderNumber() {
-		return orderNumber;
-	}
-
-	public void setOrderNumber(long orderNumber) {
-		this.orderNumber = orderNumber;
-	}
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
-	public String getOrderDate() {
-		return orderDate;
-	}
-
-	public void setOrderDate(String orderDate) {
-		this.orderDate = orderDate;
-	}
-
-	public String getShippingAddress() {
-		return shippingAddress;
-	}
-
-	public void setShippingAddress(String shippingAddress) {
-		this.shippingAddress = shippingAddress;
-	}
-
-	public List<Product> getOrderItems() {
-		return orderItems;
-	}
-
-	public void setOrderItems(List<Product> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public float getTotal() {
-		return total;
-	}
-
-	public void setTotal(float total) {
-		this.total = total;
-	}
+	
 
 	@Override
 	public String toString() {
