@@ -42,7 +42,7 @@ public class OrderServiceController {
 	 
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON)
-	public OrderEntity createOrder(@Valid @RequestBody OrderEntity order) throws OrderItemNotFoundException{
+	public OrderEntity createOrder(@Valid @RequestBody OrderEntity order) throws OrderItemNotFoundException, RuntimeException{
 		
 		OrderEntity orderResponse = orderService.createOrder(order);
 		System.out.println("orderResponse :"+orderResponse);

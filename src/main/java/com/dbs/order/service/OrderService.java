@@ -67,7 +67,7 @@ public class OrderService {
 	   */
 	
 	public OrderEntity createOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
-			
+		
 		for(Product product : orderEntity.getOrderItems()) {
 			String productName = product.getProductName();
 			try {
@@ -77,10 +77,7 @@ public class OrderService {
 					throw new OrderItemNotFoundException("Requested order quantity for "+product.getProductName() +" is more than available quantity of "+orderItem.getQuantity());
 				}
 			}catch(FeignException ex) {
-				String errorMsg = ex.getMessage();
-				errorMsg = errorMsg.substring(errorMsg.indexOf("message"), errorMsg.indexOf("details"))
-									.replace("message", "").replace(":", "");
-				throw new OrderItemNotFoundException(errorMsg);
+				throw new OrderItemNotFoundException(ex.getMessage());
 			}
 			
 		}
