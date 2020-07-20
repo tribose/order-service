@@ -52,6 +52,19 @@ public class OrderService {
 		  } 
 	  }
 	 
+	  /*
+	   * Create an order follow steps mentioned below
+	   * 
+	   * 1. Retrieve order item from order-item-service
+	   * 2. compare quantity of each requested item with order item. 
+	   * 	If requested ordered item count is greater than actual order item count
+	   * 	then throw OrderItemNotFoundException
+	   * 
+	   * 3. Set Order Number for this order
+	   * 4. Save requested Order
+	   * 5. Update count of Order item
+	   * 
+	   */
 	
 	public OrderEntity createOrder(OrderEntity orderEntity) throws OrderItemNotFoundException {
 			
