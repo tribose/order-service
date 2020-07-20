@@ -1,4 +1,4 @@
-Exposed REST URI:
+A > Exposed REST URI:
 
 1. Create an Order  : POST Service
 
@@ -30,3 +30,16 @@ Exposed REST URI:
 3. Get Order by Order Number : GET Service
 
 	http://localhost:8081/orders/{orderNumber}
+	
+	
+B > To Open H2 DB UI console
+
+	http://localhost:8081/h2-console/
+
+	Driver class : org.h2.Driver
+
+	JDBC URL : jdbc:h2:mem:orderdb
+	
+	User name : admin
+	
+	Password: password
