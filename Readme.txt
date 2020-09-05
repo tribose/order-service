@@ -1,4 +1,4 @@
-A > Exposed REST URI updated on 5th Sep, 2020, Saturday:
+A > Exposed REST URI updated on 5th Sep, 2020:
 
 1. Create an Order  : POST Service
 
